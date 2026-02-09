@@ -1,3 +1,4 @@
+import 'package:alumni_management/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -110,7 +111,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Registration successful")),
       );
-    } else {
+
+      // wait a moment so user sees message
+      await Future.delayed(const Duration(seconds: 1));
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
+      );
+    }
+
+   else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Error: ${response.body}")),
       );
