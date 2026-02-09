@@ -65,6 +65,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               items: const [
                 DropdownMenuItem(value: "ALUMNI", child: Text("ALUMNI")),
                 DropdownMenuItem(value: "FACULTY", child: Text("FACULTY")),
+                DropdownMenuItem(value: "ADMIN", child: Text("ADMIN"))
               ],
 
               // onchange if we change value in dropdown it will show
