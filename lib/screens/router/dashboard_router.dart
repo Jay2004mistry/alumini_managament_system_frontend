@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'alumni_dashboard.dart';
-import 'faculty_dashboard.dart';
-import 'admin_dashboard.dart';
+import '../../utils/storage_service.dart';
+import '../dashboard/admin_home_screen.dart';
+import '../dashboard/alumni_home_screen.dart';
+import '../dashboard/faculty_home_screen.dart';
 
 class DashboardRouter extends StatefulWidget {
   const DashboardRouter({super.key});
@@ -13,7 +12,8 @@ class DashboardRouter extends StatefulWidget {
 }
 
 class _DashboardRouterState extends State<DashboardRouter> {
-  String role = "";
+
+  String? role;
 
   @override
   void initState() {
@@ -22,26 +22,28 @@ class _DashboardRouterState extends State<DashboardRouter> {
   }
 
   Future<void> loadRole() async {
-    final prefs = await SharedPreferences.getInstance();
+    final savedRole = await StorageService.getUserRole();
     setState(() {
-      role = prefs.getString('userRole') ?? "";
+      role = savedRole;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (role.isEmpty) {
+
+    if (role == null) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
       );
     }
 
-    if (role == "ADMIN") {
-      return const AdminDashboard();
-    } else if (role == "FACULTY") {
-      return const FacultyDashboard();
-    } else {
-      return const AlumniDashboard();
+    switch (role) {
+      case "ADMIN":
+        return const AdminDashboard();
+      case "FACULTY":
+        return const FacultyDashboard();
+      default:
+        return const HomeScreen();
     }
   }
 }
