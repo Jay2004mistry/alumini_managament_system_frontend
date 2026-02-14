@@ -15,10 +15,13 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    checkLogin();
+    _initializeApp();
   }
 
-  Future<void> checkLogin() async {
+  Future<void> _initializeApp() async {
+    // Small delay so splash is visible properly
+    await Future.delayed(const Duration(seconds: 2));
+
     final isLoggedIn = await StorageService.getLoginStatus();
 
     if (!mounted) return;
@@ -39,7 +42,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Center(child: CircularProgressIndicator()),
+      body: Center(
+        child: CircularProgressIndicator(),
+      ),
     );
   }
 }

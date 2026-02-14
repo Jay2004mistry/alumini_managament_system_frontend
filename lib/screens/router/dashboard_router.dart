@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../utils/storage_service.dart';
-import '../dashboard/admin_home_screen.dart';
-import '../dashboard/alumni_home_screen.dart';
-import '../dashboard/faculty_home_screen.dart';
+import '../navigation/main_navigation.dart';
 
 class DashboardRouter extends StatefulWidget {
   const DashboardRouter({super.key});
@@ -37,13 +35,6 @@ class _DashboardRouterState extends State<DashboardRouter> {
       );
     }
 
-    switch (role) {
-      case "ADMIN":
-        return const AdminDashboard();
-      case "FACULTY":
-        return const FacultyDashboard();
-      default:
-        return const HomeScreen();
-    }
+    return MainNavigation(userRole: role!);
   }
 }

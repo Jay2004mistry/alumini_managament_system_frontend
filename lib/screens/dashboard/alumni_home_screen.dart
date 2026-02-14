@@ -1,323 +1,263 @@
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F0F0F),
+      backgroundColor: const Color(0xFFF5F6FA),
 
       appBar: AppBar(
-        backgroundColor: const Color(0xFF0F0F0F),
+        backgroundColor: Colors.white,
         elevation: 0,
         title: const Text(
           "GLS Connect",
           style: TextStyle(
-            color: Colors.white,
+            color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
         ),
         actions: const [
-          Icon(Icons.notifications_none, color: Colors.white),
+          Icon(Icons.notifications_none, color: Colors.black),
           SizedBox(width: 16),
-          Icon(Icons.search, color: Colors.white),
+          Icon(Icons.search, color: Colors.black),
           SizedBox(width: 16),
         ],
       ),
 
-      body: SafeArea(
-        child: Column(
-          children: [
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
 
-            // ================= FACULTY SECTION (FIXED) =================
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-
-                  const Text(
-                    "Faculty Announcements",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  SizedBox(
-                    height: 190,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 3,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 16),
-                          child: buildFacultyCard(
-                            title: index == 0
-                                ? "National Hackathon 2026"
-                                : index == 1
-                                ? "Summer Internship Drive"
-                                : "AI Workshop 2026",
-                            subtitle:
-                            "Register now for this amazing opportunity!",
-                            tag: index == 0
-                                ? "Hackathon"
-                                : index == 1
-                                ? "Internship"
-                                : "Workshop",
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
+          /// ================= ANNOUNCEMENTS =================
+          const Text(
+            "Faculty Announcements",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
             ),
-
-            // ================= POSTS SECTION (SCROLLABLE) =================
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
-                children: [
-
-                  const Text(
-                    "Recent Posts",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  buildPostCard(
-                    name: "Rahul Verma",
-                    subtitle: "Batch 2020 • 2 hours ago",
-                    category: "Achievement",
-                    content:
-                    "Excited to share that I have been promoted to Senior Software Engineer at Google!",
-                    showImage: false,
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  buildPostCard(
-                    name: "Dr. Anjali Desai",
-                    subtitle: "4 hours ago",
-                    category: "Event",
-                    content:
-                    "Reminder: Guest lecture tomorrow at 3 PM in Auditorium B.",
-                    showImage: true,
-                  ),
-
-                  const SizedBox(height: 16),
-
-                  buildPostCard(
-                    name: "Amit Shah",
-                    subtitle: "Batch 2022 • 1 day ago",
-                    category: "Startup",
-                    content:
-                    "Happy to launch my new AI-based startup!",
-                    showImage: false,
-                  ),
-
-                  const SizedBox(height: 40),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-
-      // ================= BOTTOM NAV =================
-      bottomNavigationBar: BottomAppBar(
-        color: const Color(0xFF1C1C1E),
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 8,
-        child: SizedBox(
-          height: 65,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              buildNavItem(Icons.home, 0),
-              buildNavItem(Icons.group, 1),
-              const SizedBox(width: 40),
-              buildNavItem(Icons.message_outlined, 2),
-              buildNavItem(Icons.person_outline, 3),
-            ],
           ),
-        ),
-      ),
 
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color(0xFF3A86FF),
-        onPressed: () {},
-        child: const Icon(Icons.add),
+          const SizedBox(height: 16),
+
+          SizedBox(
+            height: 180,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: 6,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: buildAnnouncementCard(index),
+                );
+              },
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          /// ================= POSTS =================
+          const Text(
+            "Recent Posts",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
+            ),
+          ),
+
+          const SizedBox(height: 16),
+
+          ...List.generate(12, (index) {
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: buildPostCard(index),
+            );
+          }),
+
+          const SizedBox(height: 40),
+        ],
       ),
-      floatingActionButtonLocation:
-      FloatingActionButtonLocation.centerDocked,
     );
   }
 
-  // ================= FACULTY CARD =================
-  Widget buildFacultyCard({
-    required String title,
-    required String subtitle,
-    required String tag,
-  }) {
+  /// ================= ANNOUNCEMENT CARD =================
+  Widget buildAnnouncementCard(int index) {
+    final colors = [
+      const Color(0xFFFFF4E6),
+      const Color(0xFFE6F4FF),
+      const Color(0xFFE8F5E9),
+    ];
+
     return Container(
-      width: 280,
-      padding: const EdgeInsets.all(16),
+      width: 260,
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: const Color(0xFF1C1C1E),
+        color: colors[index % 3],
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
           Chip(
-            label: Text(tag),
-            backgroundColor: const Color(0xFF3A86FF),
-            labelStyle:
-            const TextStyle(color: Colors.white),
+            label: const Text("Official"),
+            backgroundColor: Colors.black,
+            labelStyle: const TextStyle(color: Colors.white),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "Event ${index + 1}",
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            "Register now for this amazing opportunity happening soon!",
+            style: TextStyle(fontSize: 13),
+          ),
+          const Spacer(),
+          const Text(
+            "Feb 20, 2026",
+            style: TextStyle(fontSize: 12, color: Colors.grey),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// ================= POST CARD =================
+  Widget buildPostCard(int index) {
+    bool hasImage = index % 2 == 0;
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.08),
+            blurRadius: 10,
+            spreadRadius: 2,
+          )
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+
+          /// ================= HEADER =================
+          Padding(
+            padding: const EdgeInsets.all(14),
+            child: Row(
+              children: [
+                const CircleAvatar(radius: 20),
+                const SizedBox(width: 10),
+
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Rahul Verma ${index + 1}",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const Text(
+                        "Batch 2022 • 2 hours ago",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const Icon(Icons.more_vert),
+              ],
+            ),
           ),
 
-          const SizedBox(height: 10),
+          /// ================= IMAGE =================
+          if (hasImage)
+            ClipRRect(
+              borderRadius: BorderRadius.circular(0),
+              child: Image.network(
+                "https://picsum.photos/500/350?random=$index",
+                height: 250,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
 
-          Text(
-            title,
-            style: const TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold),
+          /// ================= ACTION BUTTONS =================
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            child: Row(
+              children: const [
+                Icon(Icons.favorite_border),
+                SizedBox(width: 16),
+                Icon(Icons.comment_outlined),
+                SizedBox(width: 16),
+                Icon(Icons.share_outlined),
+                Spacer(),
+                Icon(Icons.bookmark_border),
+              ],
+            ),
+          ),
+
+          /// ================= LIKES COUNT =================
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 14),
+            child: Text(
+              "234 likes",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
 
           const SizedBox(height: 6),
 
-          Text(
-            subtitle,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
-                color: Colors.grey),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ================= POST CARD =================
-  Widget buildPostCard({
-    required String name,
-    required String subtitle,
-    required String category,
-    required String content,
-    required bool showImage,
-  }) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1C1C1E),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-
-          Row(
-            children: [
-              const CircleAvatar(backgroundColor: Colors.grey),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Text(
-                      subtitle,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Chip(
-                label: Text(category),
-                backgroundColor: const Color(0xFF2A2A2D),
-                labelStyle: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 12),
-
-          Text(
-            content,
-            style: const TextStyle(color: Colors.grey),
-          ),
-
-          if (showImage) ...[
-            const SizedBox(height: 12),
-            Container(
-              height: 150,
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(12),
+          /// ================= CAPTION =================
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            child: RichText(
+              text: const TextSpan(
+                style: TextStyle(color: Colors.black),
+                children: [
+                  TextSpan(
+                    text: "Rahul Verma ",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  TextSpan(
+                    text:
+                    "Excited to share my achievement with GLS community! 🚀",
+                  ),
+                ],
               ),
             ),
-          ],
-
-          const SizedBox(height: 12),
-
-          const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Icon(Icons.favorite_border, color: Colors.grey),
-              Icon(Icons.comment_outlined, color: Colors.grey),
-              Icon(Icons.share_outlined, color: Colors.grey),
-            ],
           ),
-        ],
-      ),
-    );
-  }
 
-  // ================= NAV ITEM =================
-  Widget buildNavItem(IconData icon, int index) {
-    return IconButton(
-      onPressed: () {
-        setState(() {
-          selectedIndex = index;
-        });
-      },
-      icon: Icon(
-        icon,
-        color: selectedIndex == index
-            ? const Color(0xFF3A86FF)
-            : Colors.grey,
+          const SizedBox(height: 6),
+
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 14),
+            child: Text(
+              "View all 45 comments",
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 13,
+              ),
+            ),
+          ),
+
+          const SizedBox(height: 14),
+        ],
       ),
     );
   }
