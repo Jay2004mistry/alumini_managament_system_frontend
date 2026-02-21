@@ -16,12 +16,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final universityNoController = TextEditingController(); // NEW
 
   String role = "USER";
   bool isLoading = false;
   bool obscurePassword = true;
 
   Future<void> registerUser() async {
+
+    if (nameController.text.isEmpty ||
+        emailController.text.isEmpty ||
+        passwordController.text.isEmpty ||
+        universityNoController.text.isEmpty) {
+      showMessage("Please fill all fields");
+      return;
+    }
+
     setState(() => isLoading = true);
 
     try {
@@ -29,6 +39,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         name: nameController.text.trim(),
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
+        universityNo: universityNoController.text.trim(), // NEW
         role: role,
       );
 
@@ -102,7 +113,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 const SizedBox(height: 40),
 
-                // NAME
+                /// FULL NAME
                 const Text(
                   "Full Name",
                   style: TextStyle(fontWeight: FontWeight.w600),
@@ -125,7 +136,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 const SizedBox(height: 25),
 
-                // EMAIL
+                /// UNIVERSITY NUMBER (NEW FIELD)
+                const Text(
+                  "University No",
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 8),
+                TextField(
+                  controller: universityNoController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    hintText: "Enter your university number",
+                    filled: true,
+                    fillColor: const Color(0xFFF5F5F5),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 18, vertical: 18),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(14),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 25),
+
+                /// EMAIL
                 const Text(
                   "Email",
                   style: TextStyle(fontWeight: FontWeight.w600),
@@ -148,7 +183,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 const SizedBox(height: 25),
 
-                // PASSWORD
+                /// PASSWORD
                 const Text(
                   "Password",
                   style: TextStyle(fontWeight: FontWeight.w600),
@@ -185,7 +220,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 const SizedBox(height: 25),
 
-                // ROLE DROPDOWN
+                /// ROLE DROPDOWN
                 const Text(
                   "Select Role",
                   style: TextStyle(fontWeight: FontWeight.w600),
@@ -212,9 +247,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     DropdownMenuItem(
                         value: "FACULTY",
                         child: Text("Faculty")),
-                    DropdownMenuItem(
-                        value: "ADMIN",
-                        child: Text("Admin")),
                   ],
                   onChanged: (value) {
                     setState(() {
@@ -225,7 +257,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                 const SizedBox(height: 35),
 
-                // REGISTER BUTTON
+                /// REGISTER BUTTON
                 SizedBox(
                   width: double.infinity,
                   height: 55,
@@ -255,27 +287,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                   ),
-                ),
-
-                const SizedBox(height: 30),
-
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Already have an account? "),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text(
-                        "Login",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
 
                 const SizedBox(height: 40),

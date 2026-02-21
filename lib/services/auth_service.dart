@@ -11,7 +11,7 @@ class AuthService {
     required String name,
     required String email,
     required String password,
-    required String role,
+    required String role, required String universityNo,
   }) async {
 
     final url = Uri.parse("${ApiConfig.baseUrl}/api/users");
