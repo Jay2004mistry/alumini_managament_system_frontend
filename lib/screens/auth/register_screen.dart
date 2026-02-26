@@ -18,7 +18,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final passwordController = TextEditingController();
   final universityNoController = TextEditingController(); // NEW
 
-  String role = "USER";
+  String role = "ALUMNI";
   bool isLoading = false;
   bool obscurePassword = true;
 
@@ -242,7 +242,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   items: const [
                     DropdownMenuItem(
-                        value: "USER",
+                        value: "ALUMNI",
                         child: Text("Alumni")),
                     DropdownMenuItem(
                         value: "FACULTY",
