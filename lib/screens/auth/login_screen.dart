@@ -32,13 +32,13 @@ class _LoginScreenState extends State<LoginScreen> {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
-        final userEmail = data['email'];
         final userName = data['name'];
-        final userRole = data['roleName'];
-        final token = data['token']; // 🔥 JWT TOKEN
+        final userRole = data['role'];   // ✅ FIXED
+        final token = data['token'];
 
-        if (token == null) {
-          showMessage("Login failed. Token missing.");
+        if (token == null || userRole == null) {
+          showMessage("Invalid server response");
+          setState(() => isLoading = false);
           return;
         }
 
@@ -46,9 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
         await StorageService.saveLoginStatus(true);
         await StorageService.saveUserName(userName);
         await StorageService.saveUserRole(userRole);
-        await StorageService.saveUserEmail(userEmail);
-        await StorageService.saveToken(token); // 🔥 SAVE TOKEN
-
+        await StorageService.saveToken(token);
         if (!mounted) return;
 
         Navigator.pushReplacement(
