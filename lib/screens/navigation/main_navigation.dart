@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../dashboard/alumni_home_screen.dart';
-import '../dashboard/admin_home_screen.dart';
 import '../dashboard/faculty_home_screen.dart';
 import '../community/community_screen.dart';
 import '../chat/chat_screen.dart';
-import '../profile/profile_screen.dart';
+import '../profile/alumni_profile_screen.dart';
+import '../profile/faculty_profile_screen.dart';
 
 class MainNavigation extends StatefulWidget {
   final String userRole;
@@ -21,33 +21,26 @@ class MainNavigation extends StatefulWidget {
 
 class _MainNavigationState extends State<MainNavigation> {
   int selectedIndex = 0;
-
   late List<Widget> pages;
 
   @override
   void initState() {
     super.initState();
 
-    if (widget.userRole == "ADMIN") {
-      pages = const [
-        AdminDashboard(),
-        CommunityScreen(),
-        ChatScreen(),
-        ProfileScreen(),
-      ];
-    } else if (widget.userRole == "FACULTY") {
+    if (widget.userRole == "FACULTY") {
       pages = const [
         FacultyDashboard(),
         CommunityScreen(),
         ChatScreen(),
-        ProfileScreen(),
+        FacultyProfileScreen(),
       ];
     } else {
+      // Default → Alumni
       pages = const [
         HomeScreen(),
         CommunityScreen(),
         ChatScreen(),
-        ProfileScreen(),
+        AlumniProfileScreen(),
       ];
     }
   }
