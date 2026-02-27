@@ -1,8 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../services/auth_service.dart';
-import '../../utils/storage_service.dart';
 import '../router/dashboard_router.dart';
 import 'register_screen.dart';
 
@@ -14,6 +12,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
@@ -21,41 +20,29 @@ class _LoginScreenState extends State<LoginScreen> {
   bool obscurePassword = true;
 
   Future<void> loginUser() async {
+
     setState(() => isLoading = true);
 
     try {
-      final response = await AuthService.loginUser(
+
+      final success = await AuthService.loginUser(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+      if (!mounted) return;
 
-        final userName = data['name'];
-        final userRole = data['role'];   // ✅ FIXED
-        final token = data['token'];
-
-        if (token == null || userRole == null) {
-          showMessage("Invalid server response");
-          setState(() => isLoading = false);
-          return;
-        }
-
-        // ✅ Save everything including token
-        await StorageService.saveLoginStatus(true);
-        await StorageService.saveUserName(userName);
-        await StorageService.saveUserRole(userRole);
-        await StorageService.saveToken(token);
-        if (!mounted) return;
+      if (success) {
 
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) => const DashboardRouter()),
         );
+
       } else {
         showMessage("Invalid email or password");
       }
+
     } catch (e) {
       showMessage("Network error: ${e.toString()}");
     }
@@ -71,6 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(
         statusBarColor: Colors.white,
@@ -87,6 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+
                 const SizedBox(height: 60),
 
                 const Text(
@@ -123,8 +112,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     hintText: "Enter your email",
                     filled: true,
                     fillColor: const Color(0xFFF5F5F5),
-                    contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 18, vertical: 18),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
                       borderSide: BorderSide.none,
@@ -148,8 +137,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     hintText: "Enter your password",
                     filled: true,
                     fillColor: const Color(0xFFF5F5F5),
-                    contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 18, vertical: 18),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 18, vertical: 18),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(14),
                       borderSide: BorderSide.none,

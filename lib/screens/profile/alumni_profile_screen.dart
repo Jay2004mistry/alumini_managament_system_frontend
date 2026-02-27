@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../services/alumni_profile_service.dart';
-import '../../services/user_service.dart';
 import '../../models/alumni_profile_model.dart';
 import '../../utils/storage_service.dart';
 import '../auth/login_screen.dart';
@@ -38,21 +37,18 @@ class _AlumniProfileScreenState extends State<AlumniProfileScreen> {
   }
 
   Future<void> loadAllData() async {
-    await Future.wait([
-      loadUser(),
-      loadProfile(),
-    ]);
+    await loadUserName();
+    await loadProfile();
 
     setState(() {
       isLoading = false;
     });
   }
 
-  Future<void> loadUser() async {
-    final user = await UserService.getCurrentUser();
-    if (user != null) {
-      username = user["name"];
-    }
+  /// ✅ Get username from local storage (saved during login)
+  Future<void> loadUserName() async {
+    final name = await StorageService.getUserName();
+    username = name ?? "";
   }
 
   Future<void> loadProfile() async {
@@ -66,8 +62,7 @@ class _AlumniProfileScreenState extends State<AlumniProfileScreen> {
       companyController.text = profile.companyName ?? "";
       industryController.text = profile.industry ?? "";
       skillsController.text = profile.skills ?? "";
-      expController.text =
-          profile.workExperience?.toString() ?? "";
+      expController.text = profile.workExperience?.toString() ?? "";
       linkedInController.text = profile.linkedInUrl ?? "";
       githubController.text = profile.githubUrl ?? "";
       contactController.text = profile.contactNumber ?? "";
@@ -117,7 +112,6 @@ class _AlumniProfileScreenState extends State<AlumniProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF8F8F8),
-
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -131,9 +125,7 @@ class _AlumniProfileScreenState extends State<AlumniProfileScreen> {
         actions: [
           IconButton(
             icon: Icon(
-              isEditing
-                  ? Icons.save_outlined
-                  : Icons.edit_outlined,
+              isEditing ? Icons.save_outlined : Icons.edit_outlined,
               color: Colors.black,
             ),
             onPressed: () async {
@@ -152,22 +144,20 @@ class _AlumniProfileScreenState extends State<AlumniProfileScreen> {
           ),
         ],
       ),
-
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(
-            horizontal: 20, vertical: 16),
+        padding:
+        const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         child: Column(
           children: [
 
-            /// Profile Image + Real Username
+            /// 🔥 Profile Image + Username
             Column(
               children: [
                 const CircleAvatar(
                   radius: 56,
-                  backgroundColor:
-                  Color(0xFFF5F5F5),
+                  backgroundColor: Color(0xFFF5F5F5),
                   child: Icon(
                     Icons.person_outline_rounded,
                     size: 56,
@@ -176,7 +166,7 @@ class _AlumniProfileScreenState extends State<AlumniProfileScreen> {
                 ),
                 const SizedBox(height: 14),
                 Text(
-                  username,
+                  username.isEmpty ? "User" : username,
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w600,
@@ -190,32 +180,23 @@ class _AlumniProfileScreenState extends State<AlumniProfileScreen> {
             _buildCard("Academic Information", [
               _buildField('Batch Year', batchController),
               _buildField('Degree', degreeController),
-              _buildField('Department',
-                  departmentController),
+              _buildField('Department', departmentController),
             ]),
 
             _buildCard("Professional Information", [
-              _buildField('Designation',
-                  designationController),
-              _buildField('Company Name',
-                  companyController),
-              _buildField('Industry',
-                  industryController),
+              _buildField('Designation', designationController),
+              _buildField('Company Name', companyController),
+              _buildField('Industry', industryController),
               _buildField('Skills', skillsController,
                   isMultiline: true),
-              _buildField('Work Experience',
-                  expController),
+              _buildField('Work Experience', expController),
             ]),
 
             _buildCard("Contact Information", [
-              _buildField('LinkedIn URL',
-                  linkedInController),
-              _buildField(
-                  'GitHub URL', githubController),
-              _buildField('Contact Number',
-                  contactController),
-              _buildField(
-                  'Current City', cityController),
+              _buildField('LinkedIn URL', linkedInController),
+              _buildField('GitHub URL', githubController),
+              _buildField('Contact Number', contactController),
+              _buildField('Current City', cityController),
             ]),
           ],
         ),
@@ -240,8 +221,7 @@ class _AlumniProfileScreenState extends State<AlumniProfileScreen> {
         ],
       ),
       child: Column(
-        crossAxisAlignment:
-        CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title.toUpperCase(),
@@ -259,8 +239,7 @@ class _AlumniProfileScreenState extends State<AlumniProfileScreen> {
     );
   }
 
-  Widget _buildField(String label,
-      TextEditingController controller,
+  Widget _buildField(String label, TextEditingController controller,
       {bool isMultiline = false}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 18),
@@ -271,26 +250,21 @@ class _AlumniProfileScreenState extends State<AlumniProfileScreen> {
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(
-            borderRadius:
-            BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
       )
           : Column(
-        crossAxisAlignment:
-        CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             label,
             style: const TextStyle(
-                fontSize: 12,
-                color: Colors.grey),
+                fontSize: 12, color: Colors.grey),
           ),
           const SizedBox(height: 4),
           Text(
-            controller.text.isEmpty
-                ? '-'
-                : controller.text,
+            controller.text.isEmpty ? '-' : controller.text,
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w500,

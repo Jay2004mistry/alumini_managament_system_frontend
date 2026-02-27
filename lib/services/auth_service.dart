@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:alumni_management/config/api_config.dart';
+import '../utils/storage_service.dart';
 
 class AuthService {
 
@@ -44,7 +45,7 @@ class AuthService {
   // ===============================
   // LOGIN USER
   // ===============================
-  static Future<http.Response> loginUser({
+  static Future<bool> loginUser({
     required String email,
     required String password,
   }) async {
@@ -63,7 +64,25 @@ class AuthService {
         }),
       );
 
-      return response;
+      if (response.statusCode == 200) {
+
+        final data = jsonDecode(response.body);
+
+        final token = data['token'];
+        final name = data['name'];
+        final role = data['role'];
+
+        // 🔥 Save everything locally
+        await StorageService.saveToken(token);
+        await StorageService.saveUserName(name);
+        await StorageService.saveUserRole(role);
+        await StorageService.saveUserEmail(email);
+        await StorageService.saveLoginStatus(true);
+
+        return true;
+      }
+
+      return false;
 
     } catch (e) {
       throw Exception("Network Error: $e");
