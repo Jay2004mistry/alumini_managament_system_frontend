@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../notification/notification_screen.dart';
+import '../search/search_screen.dart';
+
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -37,11 +40,30 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
 
-          actions: const [
-            Icon(Icons.notifications_none, color: Colors.black),
-            SizedBox(width: 16),
-            Icon(Icons.search, color: Colors.black),
-            SizedBox(width: 16),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.notifications_none, color: Colors.black),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const NotificationScreen(),
+                  ),
+                );
+              },
+            ),
+            const SizedBox(width: 5),
+            IconButton(
+              icon: const Icon(Icons.search, color: Colors.black),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SearchScreen(),
+                  ),
+                );
+              },
+            ),
           ],
         ),
 
